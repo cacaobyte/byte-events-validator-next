@@ -25,7 +25,7 @@ import {
   Search,
   Settings,
   SunMedium,
-  Ticket,
+  TicketCheck,
   Trash,
   Twitter,
   User,
@@ -38,7 +38,7 @@ export type Icon = LucideIcon
 
 export const Icons = {
   dashboard: LayoutDashboardIcon,
-  logo: Ticket,
+  logo: TicketCheck,
   login: LogIn,
   calendar: Calendar,
   users: BookUser,

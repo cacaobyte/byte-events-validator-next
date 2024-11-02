@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "Events Viewer",
+  name: "Events Validator",
   url: "https://github.com/jmaritar",
   ogImage: "https://ui.shadcn.com/og.jpg",
   description:

@@ -1,18 +1,10 @@
 "use client"
 
-import * as React from "react"
-import {
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  MonitorCog,
-  MoonStar,
-  RefreshCw,
-  Sun,
-} from "lucide-react"
+import { ChevronsUpDown, LogOut, MonitorCog, MoonStar, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { cn } from "@/lib/utils"
+import useAuth from "@/hooks/use-auth"
 import { useI18n } from "@/hooks/use-i18n"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -20,19 +12,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -47,41 +30,25 @@ import {
 } from "@/components/ui/tooltip"
 import { Icons } from "@/components/icons"
 
-interface User {
-  name: string
-  email: string
-  avatar: string
-  companyName: string
-  companyLogo: string
-  companyType: string
-}
-
 interface Company {
   logo: string
   name: string
   type: string
 }
 
-export function NavUser({
-  user,
-  companies,
-}: {
-  user: User
-  companies: Company[]
-}) {
-  const [toggleCompany, setToggleCompany] = React.useState(false)
-  const [selectedCompany, setSelectedCompany] = React.useState<Company>(
-    companies[0]
-  )
+export function NavUser() {
+  // const [toggleCompany, setToggleCompany] = React.useState(false)
+  // const [selectedCompany, setSelectedCompany] = React.useState<Company>([])
   const { isMobile } = useSidebar()
+  const { user } = useAuth()
 
-  const handleSwitchCompany = (company: Company) => {
-    setSelectedCompany(company)
-  }
+  // const handleSwitchCompany = (company: Company) => {
+  //   setSelectedCompany(company)
+  // }
 
-  const handleToggleCompany = () => {
-    setToggleCompany(!toggleCompany)
-  }
+  // const handleToggleCompany = () => {
+  //   setToggleCompany(!toggleCompany)
+  // }
 
   return (
     <SidebarMenu>
@@ -93,14 +60,12 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="size-8 rounded-lg">
-                <AvatarImage src={user.companyLogo} alt={user.companyName} />
+                <AvatarImage src={"/logo.svg"} alt={user?.username} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {user.companyName}
-                </span>
-                <span className="truncate text-xs">{user.companyType}</span>
+                <span className="truncate font-semibold">{user?.username}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -112,19 +77,7 @@ export function NavUser({
             align="start"
             sideOffset={4}
           >
-            {toggleCompany ? (
-              <NavUserCompany
-                companies={companies}
-                selectedCompany={selectedCompany}
-                handleSwitchCompany={handleSwitchCompany}
-                handleToggleCompany={handleToggleCompany}
-              />
-            ) : (
-              <NavUserMain
-                user={user}
-                handleToggleCompany={handleToggleCompany}
-              />
-            )}
+            <NavUserMain />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
@@ -132,55 +85,41 @@ export function NavUser({
   )
 }
 
-function NavUserMain({
-  user,
-  handleToggleCompany,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-  handleToggleCompany?: () => void
-}) {
+function NavUserMain() {
   const { setTheme, theme } = useTheme()
+  const { user, signOut } = useAuth()
   const i18n = useI18n()
   return (
     <>
       <DropdownMenuLabel className="font-normal">
-        <div className="flex h-8 items-center justify-between px-1 text-gray-500">
-          <span className="text-[13px] font-medium leading-[16px]">
-            marioarita502@gmail.com
-          </span>
-        </div>
         <div className="flex items-center gap-2 py-1.5 text-left text-sm">
           <Avatar className="size-8 rounded-lg">
-            <AvatarImage src={user.avatar} alt={user.name} />
+            <AvatarImage src={"/logo.svg"} alt={user?.username} />
             <AvatarFallback className="rounded-lg">CN</AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">{user.name}</span>
-            <span className="truncate text-xs">{user.email}</span>
+            <span className="truncate font-semibold">{user?.username}</span>
+            <span className="truncate text-xs">{user?.email}</span>
           </div>
         </div>
-        <Button
+        {/* <Button
           variant="outline"
           className="group h-8 w-full rounded-lg"
           onClick={handleToggleCompany}
         >
           <RefreshCw className="group-hover:animate-spin" />
           {i18n.t("nav-user.switch-company")}
-        </Button>
+        </Button> */}
       </DropdownMenuLabel>
 
-      <DropdownMenuSeparator />
+      {/* <DropdownMenuSeparator /> */}
 
-      <DropdownMenuGroup>
+      {/* <DropdownMenuGroup>
         <DropdownMenuItem className="mx-2">
           <CreditCard />
           {i18n.t("nav-user.billing")}
         </DropdownMenuItem>
-      </DropdownMenuGroup>
+      </DropdownMenuGroup> */}
 
       <DropdownMenuSeparator />
 
@@ -253,7 +192,7 @@ function NavUserMain({
             </ToggleGroup>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuLabel className="py-0 font-normal">
+        {/* <DropdownMenuLabel className="py-0 font-normal">
           <div className="flex items-center justify-between gap-2 px-1 py-1.5 text-left text-sm">
             <span className="text-sm font-normal">
               {i18n.t("nav-user.language")}
@@ -279,11 +218,11 @@ function NavUserMain({
               </SelectContent>
             </Select>
           </div>
-        </DropdownMenuLabel>
+        </DropdownMenuLabel> */}
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuLabel asChild>
-        <Button className="h-8 w-full rounded-lg">
+        <Button className="h-8 w-full rounded-lg" onClick={() => signOut()}>
           <LogOut />
           {i18n.t("nav-user.logout")}
         </Button>

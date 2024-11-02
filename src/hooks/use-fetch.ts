@@ -1,5 +1,6 @@
 import * as React from "react"
-import apiClient from "@/api/api-client"
+
+import apiClient from "@/lib/api-client"
 
 interface UseFetchResponse<T> {
   data: T | null

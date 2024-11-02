@@ -8,6 +8,7 @@ import NextTopLoader from "nextjs-toploader"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
+import { ProtectedRoute } from "@/components/protected-route"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 
 export const runtime = "edge"

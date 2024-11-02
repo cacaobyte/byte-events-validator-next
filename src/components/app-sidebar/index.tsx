@@ -2,17 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import {
-  Bell,
-  Frame,
-  Heart,
-  Home,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
-  Tickets,
-} from "lucide-react"
+import { Bell, LifeBuoy, ScanQrCode, Send, Tickets } from "lucide-react"
 
 import useAuth from "@/hooks/use-auth"
 import {
@@ -33,76 +23,23 @@ import { NavUser } from "./components/nav-user"
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-    companyName: "CacaoByte",
-    companyLogo: "/logos.svg",
-    companyType: "public",
-  },
   navMain: [
     {
-      title: "Inicio",
-      i18n: "sidebar.home",
+      title: "Escanear QR",
       url: "/",
-      icon: Home,
+      icon: ScanQrCode,
     },
     {
-      title: "Favoritos",
-      i18n: "sidebar.favorites",
-      url: "/favorites",
-      icon: Heart,
-    },
-    {
-      title: "Mis Eventos",
+      title: "Eventos Asignados",
       i18n: "sidebar.my-events",
       url: "/my-events",
       icon: Tickets,
-    },
-    {
-      title: "Notificaciones",
-      i18n: "sidebar.notifications",
-      url: "/notifications",
-      icon: Bell,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      i18n: "sidebar.support",
-      url: "/support",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      i18n: "sidebar.feedback",
-      url: "/feedback",
-      icon: Send,
-    },
-  ],
-  companies: [
-    {
-      name: "CacaoByte",
-      logo: "/logos.svg",
-      type: "public",
-    },
-    {
-      name: "Design Engineering",
-      logo: "/logos.svg",
-      type: "private",
-    },
-    {
-      name: "Sales & Marketing",
-      logo: "/logos.svg",
-      type: "private",
     },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter()
-  const { open } = useSidebar()
   const { user } = useAuth()
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
@@ -114,7 +51,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Icons.logo className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">Events Viewer</span>
+                <span className="truncate font-semibold">Events Validator</span>
                 <span className="truncate text-xs">CacaoByte</span>
               </div>
             </SidebarMenuButton>
@@ -142,8 +79,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        {!user && open && <NavLogin />}
-        <NavUser user={data.user} companies={data.companies} />
+        {/* {!user && open && <NavLogin />} */}
+        <NavUser user={user} />
       </SidebarFooter>
       {/* <SidebarRail /> */}
     </Sidebar>

@@ -23,14 +23,8 @@ export function NavLogin() {
       </CardHeader>
       <CardContent className="grid gap-2.5 p-3">
         <Link
-          className={cn(buttonVariants({ size: "sm" }), "h-8")}
-          href="/sign-up"
-        >
-          {i18n.t("nav-login.sign-up")}
-        </Link>
-        <Link
           className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
+            buttonVariants({ variant: "default", size: "sm" }),
             "h-8"
           )}
           href="/sign-in"

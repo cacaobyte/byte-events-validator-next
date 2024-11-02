@@ -80,13 +80,13 @@ export const translations = {
       "other-company": "Other Company",
     },
     "nav-login": {
-      title: "Welcome to Events Viewer",
-      description: "Sign in or sign up to access your events",
+      title: "Welcome to Events Validator",
+      description: "Sign in or sign up to access your events to validate",
       "sign-up": "Sign up",
       "sign-in": "Sign in",
     },
     "protected-route": {
-      title: "Welcome to Events Viewer",
+      title: "Welcome to Events Validator",
       description: "To access your {{title}}, logging in or create an account",
       "sign-up": "Sign up",
       "sign-in": "Sign in",
@@ -180,13 +180,14 @@ export const translations = {
       "other-company": "Otras Compañía",
     },
     "nav-login": {
-      title: "Bienvenido a Events Viewer",
-      description: "Inicia sesión o regístrate para acceder a tus eventos",
+      title: "Bienvenido a Events Validator",
+      description:
+        "Inicia sesión o regístrate para acceder a tus eventos a validar",
       "sign-up": "Registrarse",
       "sign-in": "Iniciar Sesión",
     },
     "protected-route": {
-      title: "Bienvenido a Events Viewer",
+      title: "Bienvenido a Events Validator",
       description: "Para acceder a {{title}}, inicia sesión o crea una cuenta",
       "sign-up": "Registrarse",
       "sign-in": "Iniciar Sesión",
