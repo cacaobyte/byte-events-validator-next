@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { fetchActiveEvent } from "@/services/events-service"
+import { fetchActiveEvent, fetchUsersTicket } from "@/services/events-service"
 import { useTokenStore } from "@/store/token-store"
 import { Scanner } from "@yudiel/react-qr-scanner"
 import {
@@ -10,7 +10,6 @@ import {
   CameraOff,
   CheckCircle,
   Info,
-  Ticket,
   XCircle,
 } from "lucide-react"
 
@@ -28,8 +27,7 @@ import {
 import { EventInfoCard } from "./components/event-info-card"
 import { FutureEventsList } from "./components/future-events-list"
 import { InfoDisplay } from "./components/info-display"
-import { TicketInfo, TicketInfoCard } from "./components/ticket-info-card"
-import { TicketStats } from "./components/ticket-stats"
+import { TicketInfoCard } from "./components/ticket-info-card"
 
 export type EventInfo = {
   id_event: number
@@ -49,75 +47,27 @@ export type EventInfo = {
   location: { address: string; position: string }[]
 }
 
-type ValidationResult = {
-  success: boolean
-  message: string
-}
-
-const fetchFutureEvents = async (): Promise<EventInfo[]> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  return [
-    {
-      id_event: 2,
-      id_host: 1,
-      status_event: "ACTIVE",
-      is_public: true,
-      is_free: false,
-      start_time: "2024-12-15T20:00:00.000Z",
-      end_time: "2024-12-16T00:00:00.000Z",
-      cancellation_limit_date: "2024-12-14T00:00:00.000Z",
-      cancellation_limit_time: 24,
-      creation_date: "2024-11-01T22:00:00.000Z",
-      reservation_time: 15,
-      event_name: "Festival de Jazz y Blues en el Parque",
-      event_description: "Una noche de música jazz y blues bajo las estrellas.",
-      img_url: [{ principal: "https://example.com/jazz-festival.jpg" }],
-      location: [
-        {
-          address: "Parque Central de la Ciudad",
-          position: "15.12345, -89.34567",
-        },
-      ],
-    },
-    // Add more future events as needed
-  ]
-}
-
-const fetchTicketInfo = async (ticketId: string): Promise<TicketInfo> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  const statuses = ["no validado", "válido", "usado", "cancelado", "expirado"]
-  return {
-    id: ticketId,
-    owner: {
-      name: "Juan Carlos Pérez Rodríguez",
-      email: "juan.carlos.perez@example.com",
-    },
-    status: statuses[Math.floor(Math.random() * statuses.length)],
-    validationCount: Math.floor(Math.random() * 3),
-    purchaseDate: "2023-05-01",
+type TicketInfo = {
+  id_event_ticket: number
+  status_event_ticket: string
+  reserved_at: string
+  event_ticket_categories: {
+    name_category: string
+    price_ticket: number
+    events: EventInfo
   }
-}
-
-const validateTicket = (ticket: TicketInfo): ValidationResult => {
-  if (ticket.status === "no validado") {
-    return { success: true, message: "Boleto validado exitosamente" }
-  } else if (ticket.status === "válido") {
-    return { success: true, message: "Boleto ya validado anteriormente" }
-  } else {
-    return {
-      success: false,
-      message: `Boleto no válido. Estado: ${ticket.status}`,
+  participants: {
+    users: {
+      username: string
+      email: string
+      profile_picture: string
     }
   }
 }
 
-const updateEventStats = (
-  event: EventInfo,
-  validationResult: ValidationResult
-): EventInfo => {
-  // This function needs to be updated to work with the new EventInfo structure
-  // For now, we'll return the event as is
-  return event
+type ValidationResult = {
+  success: boolean
+  message: string
 }
 
 export default function MainPage() {
@@ -130,7 +80,6 @@ export default function MainPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isTicketInfoOpen, setIsTicketInfoOpen] = useState(false)
   const [isEventInfoOpen, setIsEventInfoOpen] = useState(false)
-  const [isStatsOpen, setIsStatsOpen] = useState(false)
   const { token } = useTokenStore()
 
   useEffect(() => {
@@ -142,8 +91,6 @@ export default function MainPage() {
     setIsLoading(true)
     try {
       const event = await fetchActiveEvent(token || "")
-      // const event = null
-
       setActiveEvent(event[0])
     } catch (err) {
       setError("No se pudo cargar la información del evento.")
@@ -168,7 +115,9 @@ export default function MainPage() {
   const handleScan = async (result: string) => {
     if (result) {
       try {
-        const ticketData = await fetchTicketInfo(result)
+        const ticketData = await fetchUsersTicket(result)
+        console.log("handleScan", ticketData)
+
         setTicketInfo(ticketData)
         setIsTicketInfoOpen(true)
         setIsScanning(false)
@@ -183,14 +132,23 @@ export default function MainPage() {
     if (ticketInfo) {
       const validationResult = validateTicket(ticketInfo)
       setScanResult(validationResult)
-      if (activeEvent) {
-        const updatedEvent = updateEventStats(activeEvent, validationResult)
-        setActiveEvent(updatedEvent)
-      }
       setTicketInfo({
         ...ticketInfo,
-        status: validationResult.success ? "válido" : ticketInfo.status,
+        status_event_ticket: validationResult.success
+          ? "INACTIVE"
+          : ticketInfo.status_event_ticket,
       })
+    }
+  }
+
+  const validateTicket = (ticket: TicketInfo): ValidationResult => {
+    if (ticket.status_event_ticket === "ACTIVE") {
+      return { success: true, message: "Boleto validado exitosamente" }
+    } else {
+      return {
+        success: false,
+        message: `Boleto no válido. Estado: ${ticket.status_event_ticket}`,
+      }
     }
   }
 
@@ -276,14 +234,6 @@ export default function MainPage() {
                   <Info className="mr-2 size-4 shrink-0" />
                   <span className="truncate">Información del Evento</span>
                 </Button>
-                {/* <Button
-                  variant="outline"
-                  onClick={() => setIsStatsOpen(true)}
-                  className="min-w-0 flex-1"
-                >
-                  <Ticket className="mr-2 size-4 shrink-0" />
-                  <span className="truncate">Estadísticas de Boletos</span>
-                </Button> */}
               </div>
 
               <Button
@@ -328,14 +278,6 @@ export default function MainPage() {
                 description="Detalles del evento actual"
               >
                 <EventInfoCard event={activeEvent} />
-              </InfoDisplay>
-              <InfoDisplay
-                isOpen={isStatsOpen}
-                onOpenChange={setIsStatsOpen}
-                title="Estadísticas de Boletos"
-                description="Resumen de los boletos escaneados"
-              >
-                <TicketStats event={activeEvent} />
               </InfoDisplay>
               <InfoDisplay
                 isOpen={isTicketInfoOpen}

@@ -56,14 +56,13 @@ export const fetchPastEvents = async (token: string): Promise<any> => {
   }
 }
 
-export const fetchUsersTicket = async (token: string): Promise<any> => {
+export const fetchUsersTicket = async () // id_event_ticket: string
+: Promise<any> => {
   try {
-    const response = await apiClient.get("/manager/validators/usersTicket", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await apiClient.post("/manager/validators/usersTicket", {
+      id_event_ticket: 2,
     })
-    return response.usersTicket
+    return response.reservationDetails
   } catch (error) {
     if (error) {
       return error as ErrorResponse

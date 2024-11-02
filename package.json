@@ -1,5 +1,5 @@
 {
-  "name": "byte-events-viewer",
+  "name": "byte-events-validator-next",
   "version": "0.1.0",
   "description": "Byte Events API",
   "private": true,
@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/cacaobyte/byte-events-viewer.git"
+    "url": "https://github.com/cacaobyte/byte-events-viewer-next.git"
   },
   "scripts": {
     "dev": "next dev --turbo",
